@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const crudForm = document.getElementById('crudForm');
-    const addModal = document.getElementById('addModal');
-    const editModal = document.getElementById('editModal');
     const tableBody = document.getElementById('tableBody');
     const editForm = document.getElementById('editForm');
     const editIdInput = document.getElementById('editId');
@@ -15,12 +13,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const addDobInput = document.getElementById('dob');
     const searchInput = document.getElementById('search');
 
-    // Load data from localStorage on page load
     let data = loadDataFromLocal();
-    // displayData();
+    displayData();
 
+    function toggleSortDirection() {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    }
 
-    // Event listener for form submission (Add Form)
     crudForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
@@ -30,24 +29,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const newDOB = addDobInput.value.trim();
 
         if (newLastName !== '' && newFirstName !== '' && newGender !== '' && newDOB !== '') {
-            // Create operation
+
             addData(newLastName, newFirstName, newGender, newDOB);
 
-            // Update display
             displayData();
 
-            // Clear input fields
             addLastNameInput.value = '';
             addFirstNameInput.value = '';
             addGenderInput.value = '';
             addDobInput.value = '';
 
-            // Close the modal
             closeAddModal();
         }
     });
 
-    // Event listener for form submission (Edit Form)
+
+    // Edit form 
     editForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
@@ -58,10 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const editDOB = editDobInput.value.trim();
 
         if (editLastName !== '' && editFirstName !== '' && editGender !== '' && editDOB !== '') {
-            // Update operation
+
             updateData(editId, editLastName, editFirstName, editGender, editDOB);
 
-            // Hide edit modal
             closeEditModal();
 
             // Update display
@@ -71,13 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to display data in the table
     function displayData(dataToDisplay) {
+
         // Clear existing table rows
         tableBody.innerHTML = '';
 
-        // Use the provided data or the filtered data
         const itemsToDisplay = dataToDisplay || data;
 
-        // Populate table with data
         itemsToDisplay.forEach(item => {
             const formattedDate = new Date(item.dob).toDateString();
 
@@ -87,14 +82,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 `<td>${item.gender}</td>` +
                 `<td>${formattedDate}</td>` +
                 '<td>' +
-                `<button type="button" onclick="editData(${item.id})"><i class="fa-regular fa-edit"></i></button>` +
+                `<button type="button" onclick="editData(${item.id})"><i class="fa-regular fa-edit"></i></button>&nbsp;` +
                 `<button type="button" onclick="deleteData(${item.id})"><i class="fa-solid fa-trash"></i></button>` +
                 '</td>';
             tableBody.appendChild(row);
         });
     }
 
-    // Function to add data to the array
+    // add data
     function addData(lastName, firstName, gender, dob) {
         const newEntry = {
             id: Date.now(),
@@ -109,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-    // Function to update data in the array
+    // update data 
     function updateData(id, lastName, firstName, gender, dob) {
         const index = data.findIndex(item => item.id === id);
         if (index !== -1) {
@@ -118,21 +113,21 @@ document.addEventListener('DOMContentLoaded', function () {
             data[index].gender = gender;
             data[index].dob = dob;
         }
+        saveDataToLocal(data)
     }
 
-    // Function to delete data from the array
+    // delete data from the array
     window.deleteData = function (id) {
         data = data.filter(item => item.id !== id);
 
-        // Update display after deletion
+        // Update display
         displayData();
     };
 
-    // Function to edit data
+    // edit data
     window.editData = function (id) {
         const itemToEdit = data.find(item => item.id === id);
 
-        // Populate edit form with existing data
         editIdInput.value = itemToEdit.id;
         editLastNameInput.value = itemToEdit.lastName;
         editFirstNameInput.value = itemToEdit.firstName;
@@ -152,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
     window.searchData = function () {
         const searchInputValue = searchInput.value.trim().toLowerCase();
 
-        // Filter data based on search input
         const filteredData = data.filter(item =>
             item.lastName.toLowerCase().includes(searchInputValue) ||
             item.firstName.toLowerCase().includes(searchInputValue) ||
@@ -175,36 +169,56 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    function sortDataBy(property) {
-        data.sort((a, b) => {
-            if (a[property] < b[property]) return -1;
-            if (a[property] > b[property]) return 1;
-            return 0;
-        });
+    let sortDirection = 'asc'; // Default sorting direction
+
+    // Property mapping
+    const propertyMap = {
+        'Last Name': 'lastName',
+        'First Name': 'firstName',
+        'Gender': 'gender',
+        'Date of Birth': 'dob',
+    };
+
+    // Function to toggle sorting order
+    function toggleSortDirection() {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
-    function handleSortClick(event) {
-        console.log('Sorting clicked!');
-    
-        const columnHeader = event.target;
-        const columnName = columnHeader.textContent.toLowerCase().trim();
-    
-        console.log('Column Name:', columnName);
-    
-        if (columnName) {
-            sortDataBy(columnName);
-            console.log('Data after sorting:', data);
-            displayData();  // Update display after sorting
-        }
+    // Function to sort data
+    function sortTable(columnName) {
+        toggleSortDirection();
+
+        const objectProperty = propertyMap[columnName];
+
+        data.sort((a, b) => {
+            const valueA = a[objectProperty];
+            const valueB = b[objectProperty];
+
+            const multiplier = sortDirection === 'asc' ? 1 : -1;
+
+            if (objectProperty === 'dob') {
+                const dateA = new Date(valueA).getTime();
+                const dateB = new Date(valueB).getTime();
+
+                return (dateA - dateB) * multiplier;
+            } else {
+                const stringA = String(valueA).toLowerCase();
+                const stringB = String(valueB).toLowerCase();
+
+                return stringA.localeCompare(stringB) * multiplier;
+            }
+        });
+
+        displayData();
     }
-    
 
     // Add event listeners for sorting when clicking on table headers
-    const tableHeaders = document.querySelectorAll('#table thead th');
+    const tableHeaders = document.querySelectorAll('#table th');
     tableHeaders.forEach(header => {
-        header.addEventListener('click', handleSortClick);
-        
+        header.addEventListener('click', function (event) {
+            const columnName = event.target.textContent.trim();
+            sortTable(columnName);
+        });
     });
-    displayData();
 });
 
