@@ -1,0 +1,88 @@
+.container{
+    border: 2px black solid;
+    max-width: 65rem;
+    padding: 10px;
+    margin: auto;
+}
+
+.add{
+    background-color: #e6e5e5;
+    padding: 2px 4px;
+    border-radius: 5px;
+    border: .5px solid black;
+    float: right;
+}
+.modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            z-index: 1000;
+            border: 2px solid black;
+            box-shadow: 5px 10px 10px grey;
+            
+        }
+
+        #addModal, #editModal {
+            width: 300px;
+        }
+
+        #addModal input, #editModal input, #addModal select, #editModal select {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #addModal button, #editModal button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px ;
+            font-weight: 800;
+        }
+        #close {
+            background-color: red;
+            color: white;
+            
+        }
+        #addModal #add ,#editModal #add{
+            background-color: green;
+            color: white;
+        }
+        
+
+
+
+.container input[type ="search"]{
+    width: 100%;
+    padding: 5px 0 5px 20px;
+}
+
+table{
+    width:65rem;
+    margin-top: 5px;
+}
+table ,th,td{
+    border: 1px solid black;
+    text-align: center;
+}
+td,th{
+    padding: 5px 0px;
+}
+table tr th{
+    background-color: blue;
+    color: #d8d5d5;
+    font-size: 18px;
+    
+}
+
+table tr td{
+    font-size: 15px;
+}
+
+select {
+    padding: 0px 10px;
+    width: 100%;
+    text-align: center;
+}

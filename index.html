@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- font awesome cdn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- css style  -->
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <h1>List of persons</h1>
+
+        <button type="button" class="add" id="add" onclick="openAddModal()">
+            <i class="fa-solid fa-circle-plus"></i>
+        </button>
+
+        <input type="search" id="search" oninput="searchData()" placeholder="search for names, birth dates, gender...">
+        <div id="addModal" class="modal">
+            <h2>Add Data</h2>
+            <form id="crudForm">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" required>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" required>
+                <label for="gender">Gender:</label>
+                <select id="gender" required>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select><br>
+                <!-- <input type="text" id="gender" required> -->
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" required>
+                <!-- <input type="text" id="dob" required> -->
+                <button type="submit" id="add">Add</button>
+            </form>
+            <button onclick="closeAddModal()" id="close">Close</button>
+        </div>
+    
+        <!-- Display area for data in the table -->
+        <table id="table">
+            <thead>
+                <tr>
+                    <th>Last Name <i class="fa-solid fa-sort"></i></th>
+                    <th>First Name <i class="fa-solid fa-sort"></i></th>
+                    <th>Gender <i class="fa-solid fa-sort"></i></th>
+                    <th>Date of Birth <i class="fa-solid fa-sort"></i></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    
+        <!-- Edit modal -->
+        <div id="editModal" class="modal">
+            <h2>Edit Data</h2>
+            <form id="editForm">
+                <input type="hidden" id="editId">
+                <label for="editLastName">Last Name:</label>
+                <input type="text" id="editLastName" required>
+                <label for="editFirstName">First Name:</label>
+                <input type="text" id="editFirstName" required>
+                <label for="editGender">Gender:</label>
+                <!-- <input type="text" id="editGender" required> -->
+                <select id="editGender" required>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <label for="editDob">Date of Birth:</label>
+                <input type="date" id="editDob" required>
+                <button type="submit" id="add">Save</button>
+                <button type="button" onclick="cancelEdit()" id="cancel">Cancel</button>
+            </form>
+            <button onclick="closeEditModal()" id="close">Close</button>
+        </div>
+    
+    
+        <script src="js.js"></script>
+    
+        <script>
+            function openAddModal() {
+                document.getElementById('addModal').style.display = 'block';
+            }
+    
+            function closeAddModal() {
+                document.getElementById('addModal').style.display = 'none';
+            }
+    
+            function openEditModal() {
+                document.getElementById('editModal').style.display = 'block';
+            }
+    
+            function closeEditModal() {
+                document.getElementById('editModal').style.display = 'none';
+            }
+        </script>
+</body>
+
+</html>
